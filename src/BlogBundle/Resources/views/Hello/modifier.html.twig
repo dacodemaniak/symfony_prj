@@ -1,5 +1,5 @@
 {#
-	src/BlogBundle/Resources/views/Hello/ajouter.html.twig
+	src/BlogBundle/Resources/views/Hello/modifier.html.twig
 	Etend src/BlogBundle/Resources/views/Hello/article.html.twig
 	webDev - 2017
 	Variables exposées :
@@ -7,15 +7,15 @@
 #}
 {% extends BlogBundle::Hello::article.html.twig %}
 
-{% block title %}Ajouter un article{% endblock %}
+{% block title %}Modifier un article{% endblock %}
 		
 {% block formulaire %}
 	<div class="well">
-		<form method="post" action="" name="ajouter" id="ajouter" enctype="multipart/form-data">
+				<form method="post" action="" name="ajouter" id="ajouter" enctype="multipart/form-data">
 			<fieldset>
 				<div class="form-group">
 					<label for="titre">Titre :</label>
-					<input type="text" name="titre" id="titre" value="" placeholder="Insérez un titre" class="form-control">
+					<input type="text" name="titre" id="titre" value="{{ titre }}" placeholder="Insérez un titre" class="form-control">
 				</div>
 			</fieldset>
 		</form>

@@ -1,23 +1,10 @@
 {#
-	MenuBundle/views/Default/menu.html.twig
-	Affiche les options de menu
+	MenuBundle/views/Default/footer.html.twig
+	Affiche les options de menu (pied de page)
 	@var menu : Tableau contenant les options de menu
 #}
-        <nav class="navbar navbar-default">
-        	<div class="container-fluid">
-        		<div class="navbar-header">
-        			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myblog-main-menu" aria-expanded="false">
-						<span class="sr-only">Montrer/Cacher</span>
-        				<span class="icon-bar"></span>
-        				<span class="icon-bar"></span>
-        				<span class="icon-bar"></span>        				
-        			</button>
-        			<!-- Marqueur de menu -->
-        			<a class="navbar-brand" href="#">MyBlog</a>
-        		</div>
-        		
-        		<div class="collapse navbar-collapse" id="myblog-main-menu">
-        	<ul>
+        <nav>
+        	<ul class="nav nav-pills stacked">
         		<!--  On va boucler sur le tableau "menu" pour afficher les options -->
         	    {% for item in menu %} {# Boucle principale : Eléments du tableau principal #}
         	    	{# ATTENTION item est désormais un tableau associatif #}
@@ -55,7 +42,3 @@
         	    {% endfor %}
         	</ul>
         </nav>
-
-{#
-	<a href="{{ path(item.route) }}" title="{{ item.titre }}">{{ item.libelle }}</a>
-#}

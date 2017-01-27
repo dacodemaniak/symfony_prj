@@ -1,0 +1,12 @@
+{#
+	src/BlogBundle/Resources/views/Hello/formulaire.html.twig
+	Il vit sa vie tranquille ce formulaire
+#}
+<form method="post" action="" name="" id="" enctype="multipart/form-data">
+	<fieldset>
+		<div class="form-group">
+			<label for="titre">Titre :</label>
+			<input type="text" name="titre" id="titre" value="{% if (titre is defined) %}{{ titre }}{% endif %}" placeholder="Insérez un titre" class="form-control">
+		</div>
+	</fieldset>
+</form>

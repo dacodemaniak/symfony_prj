@@ -1,0 +1,19 @@
+{#
+	/src/BlogBundle/Resources/views/layout.html.twig
+	Template parent qui sert aux templates enfants pour surcharge
+	Etend ::app.html.twig (Template défini à la racine de notre application
+	Définit les blocs qui pourront (ou pas) être surchargés par les templates enfants
+#}
+{% extends "::app.html.twig" %}
+
+{% block title %}MyBlog v.1.0 {{ parent() }}{% endblock %}
+
+{% block body %}
+	<div id="slider">
+		Ici, un beau slider qui va arriver sans tarder...
+	</div>
+
+	{% block blog_body %}
+	{% endblock %}
+	
+{% endblock %}

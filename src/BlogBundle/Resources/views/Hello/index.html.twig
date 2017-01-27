@@ -1,46 +1,26 @@
 {#
 	src/BlogBundle/Resources/views/Hello/index.html.twig
+	Etend le template parent src/BlogBundle/Resources/views/layout.html.twig
 	webDev - 2017
 	Variables exposées :
-		pageTitle => Titre de la page qui sera renvoyée en réponse au navigateur
+		pageTitle => Titre de la page qui sera renvoy�e en r�ponse au navigateur
 		innerTitle => Titre à afficher dans le corps du document HTML (SEO Friendly)
 #}
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		
-		<title>{{ pageTitle }}</title>
-		
-		<style>
-			.toLower{
-				text-transform: lowercase;
-			}
-		</style>
-	</head>
+
+{% extends "BlogBundle::layout.html.twig" %}
+
+{% block title %}Accueil - {{ parent() }}{% endblock %}
 	
-	<body>
-		<header>
-			<h1 class="toLower">{{ titreInterne | upper }}</h1>
-		</header>
-		
-		{{ include("MenuBundle:Default:menu.html.twig") }}
-		
-		<main>
-			Utiliser <strong>Twig</strong> permet de séparer les tâches :
-			<ul>
-				<li>Développeur : Modèle et Contrôleur</li>
-				<li>Intégrateur : Vue Twig ou autre</li>
-			</ul>
-		</main>
-		
-		<footer>
-			<ul>
-				<li>Powered by Symfony 2.8</li>
-				<li>{{ (titreInterne ~ ' [' ~ pageTitle ~ ']') | upper }}</li>
-				<li> {{ "MyBlog %s.%s" | format(majVersion,minVersion) }}</li>
-			</ul>
-		</footer>
-	</body>
-</html>
+{% block blog_body %}
+	{%  for article in articles %}
+		<article class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<header>
+				<h2>{{ article.titre }}</h2>
+			</header>
+			<p>{{ article.contenu }}</p>
+			<footer>
+				Créé par {{ article.auteur }}, le {{ article.date | date("d-m-Y") }}
+			</footer>
+		</article>
+	{% endfor %}
+{% endblock %}

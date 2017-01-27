@@ -20,6 +20,15 @@ class MenuController extends Controller{
 		//return new Response("Coucou, je suis le menu");
 	}
 	
+	public function footerAction(){
+		return $this->render(
+				"MenuBundle:Default:footer.html.twig",
+				array(
+						"menu" => $this->menu()
+				)
+		);
+	}
+	
 	private function menu(){
 		return array( // Tableau principal "menu"
 				array( // Elemént 1 du tableau menu
@@ -28,7 +37,7 @@ class MenuController extends Controller{
 					"titre" => "Retour à l'accueil de myBlog"
 				),
 				array( // Elément 2 du tableau menu
-					"libelle" => "Articles",
+					"libelle" => "Hot Posts",
 					"route" => "",
 					"titre" => "Blog",
 					"enfants" => array(

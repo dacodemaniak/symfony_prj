@@ -1,40 +1,33 @@
 {#
 	src/BlogBundle/Resources/views/Hello/article.html.twig
+	Etend src/BlogBundle/Resources/views/layout.html.twig
 	webDev - 2017
-	Variables exposÃ©es :
-		$id => Identifiant dÃ©fini par la route, et transmis par voirAction()
+	Variables exposées :
+		$id => Identifiant défini par la route, et transmis par voirAction()
 #}
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-		
-		<title>Article : {{ id }} : {{ action }}</title>
-		
-	</head>
+	{% extends "BlogBundle::layout.html.twig" %}
 	
-	<body>
+	{% block title %}{{ parent() }} - Article : {{ id }} : {{ action }}{% endblock %}
+	
+	{% block blog_body %}
 		<header>
-			<h1>Un article</h1>
+			<h1>
+			    {% if action == "ajouter" %}
+			    	Ajouter un article
+			    {% else %}
+			    	Mettre à jour l'article {{ id }}
+			    {% endif %}
+			</h1>
 		</header>
 		
 		<main>
-			{% for article in articles %}
-    			<article data-id="{{ id }}">
-    				<header>
-    					<h2>Titre de l'article {{ id }}</h2>
-    				</header>
-    				<p>Lorem...</p>
-    				<footer>
-    					<p>Auteur : {{ auteur }}</p>
-    				</footer>
-    			</article>
-    		{% endfor %}
+			{# Inclusion de la vue chargeant le formulaire ajout ou modification #}
+			<div class="well">
+				{%  include "BlogBundle:Hello:formulaire.html.twig" %}
+			</div>
 		</main>
 		
 		<footer>
 			Powered by Symfony 2.8
 		</footer>
-	</body>
-</html>
+	{% endblock %}

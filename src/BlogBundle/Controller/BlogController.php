@@ -13,8 +13,15 @@ use Symfony\Component\HttpFoundation\Response; // Classe permettant de retourner
 use Symfony\Component\HttpFoundation\Request; // Classe permettant d'accéder aux informations de la requête HTTP
 
 class BlogController extends Controller{
+	/**
+	 * Stocke les articles déjà disponibles
+	 * @var array
+	 */
+	private $articles;
 	
 	public function indexAction(){
+		$this->articles = $this->getArticles();
+		
 		return $this->render(
 			"BlogBundle:Hello:index.html.twig",
 			array(
@@ -22,7 +29,7 @@ class BlogController extends Controller{
 				"titreInterne" => "Symfony exposé par le contrôleur",
 				"majVersion" => 1,
 				"minVersion" => 0,
-				"menu" => $this->menu()
+				"articles" => $this->articles
 			)
 		);
 	}
@@ -32,6 +39,32 @@ class BlogController extends Controller{
 			return !is_null($defaultValue) ? $defaultValue : null;
 		}
 		return $_GET[$param];
+	}
+	
+	private function getArticles(){
+		return array(
+			array(
+				"titre" => "Mon premier post",
+				"contenu" => "blablabla...",
+				"image" => "image/first.jpg",
+				"auteur" => "JLA",
+				"date" => new \DateTime("2016-12-23")
+			),
+			array(
+						"titre" => "Mon second post",
+						"contenu" => "blablabla...",
+						"image" => "image/second.jpg",
+						"auteur" => "JLA",
+						"date" => new \DateTime("2016-12-24")
+				),
+			array(
+						"titre" => "Mon troisième post",
+						"contenu" => "blablabla...",
+						"image" => "image/third.jpg",
+						"auteur" => "JLA",
+						"date" => new \DateTime("2017-01-02")
+				)
+		);	
 	}
 	
 	/**
@@ -73,8 +106,7 @@ class BlogController extends Controller{
 			array(
 				"id" => $id,
 				"auteur" => "Jean-Luc Aubert",
-				"action" => $action,
-				"menu" => $this->menu()
+				"action" => $action
 			)
 		);
 		
@@ -102,8 +134,7 @@ class BlogController extends Controller{
 		return $this->render(
 			"BlogBundle:Hello:ajouter.html.twig",
 			array(
-				"date" => date("d-m-Y H:i:s"),
-				"menu" => $this->menu()
+				"date" => date("d-m-Y H:i:s")
 			)
 		);
 	}
@@ -124,31 +155,6 @@ class BlogController extends Controller{
 				</body>
 			</html>
 		";
-	}
-
-	private function menu(){
-		return array(
-				array(
-						"libelle" => "Accueil",
-						"route" => "blog_homepage",
-						"titre" => "Retour à l'accueil de myBlog"
-				),
-				array(
-						"libelle" => "Tous les articles",
-						"route" => "blog_hello",
-						"titre" => "Voir tous les articles"
-				),
-				array(
-						"libelle" => "Les 5 derniers articles",
-						"route" => "blog_ajouter",
-						"titre" => "Voir les 5 derniers articles"
-				),
-				array(
-						"libelle" => "Contact",
-						"route" => "blog_contact",
-						"titre" => "Contactez l'auteur de myBlog"
-				)
-		);
 	}
 }
 

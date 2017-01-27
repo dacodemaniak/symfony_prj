@@ -1,0 +1,50 @@
+{#
+	app/Resouces/views/app.html.twig
+		Template de base de notre application : grand-parent
+		Définit la structure globale de l'application :
+			- Inclut les feuilles de styles
+			- Inclut les javascripts
+			- Les balises de base ainsi que les "blocs" utilisables
+#}
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+		
+		<title>{% block title %}Powered by Symfony{% endblock %}</title>
+		
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+		
+		{% block stylesheets %}
+			<!-- On va utiliser bootstrap !!! -->
+			<link href="{{ asset("bootstrap-3.3.7/css/bootstrap.min.css") }}" rel="stylesheet">
+		{% endblock %}
+	</head>
+	
+	<body>
+		<div class="container">
+			<header id="main-header">
+				<h1>MyBlog v1.0</h1>
+			</header>
+			
+			
+            {{ render(controller("MenuBundle:Menu:index")) }}
+            
+			<main class="content">
+				{% block body %}
+				{% endblock %}
+			</main>
+			
+			<footer>
+				{{ render(controller("MenuBundle:Menu:footer")) }}
+			</footer>
+		</div>
+		
+		{% block javascripts %}
+			<script src="{{ asset("js/jquery.min.js") }}" charset="utf-8"></script>
+			<script src="{{ asset("js/bootstrap.min.js") }}" charset="utf-8"></script>
+		{% endblock %}
+	</body>
+	
+</html>
