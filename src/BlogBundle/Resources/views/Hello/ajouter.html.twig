@@ -1,0 +1,32 @@
+{#
+	src/BlogBundle/Resources/views/Hello/ajouter.html.twig
+	webDev - 2017
+	Variables exposées :
+		$date => Date du jour avec l'heure courante
+#}
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		
+		<title>{{ title }}</title>
+		
+	</head>
+	
+	<body>
+		<header>
+			<h1>Un article a été ajouté : {{ date }}</h1>
+		</header>
+		
+		<div class="dismiss flash">
+			{% for info in app.session.flashbag.get("info") %}
+				<p>{{ info }}</p>
+			{% endfor %}
+		</div>
+		
+		<footer>
+			Powered by Symfony 2.8
+		</footer>
+	</body>
+</html>
