@@ -3,21 +3,34 @@
 	Etend src/BlogBundle/Resources/views/Hello/article.html.twig
 	webDev - 2017
 	Variables exposées :
-		$date => Date du jour avec l'heure courante
+		date => Date du jour avec l'heure courante
+		article => Instance de BlogBundle\Entity\Blog
 #}
-{% extends BlogBundle::Hello::article.html.twig %}
+{% extends "BlogBundle:Hello:article.html.twig" %}
 
 {% block title %}Ajouter un article{% endblock %}
-		
-{% block formulaire %}
-	<div class="well">
-		<form method="post" action="" name="ajouter" id="ajouter" enctype="multipart/form-data">
-			<fieldset>
-				<div class="form-group">
-					<label for="titre">Titre :</label>
-					<input type="text" name="titre" id="titre" value="" placeholder="Insérez un titre" class="form-control">
-				</div>
-			</fieldset>
-		</form>
-	</div>
+
+{% block blog_body %}
+    <!--  Affiche les données de l'objet article -->
+    <div class="jumbotron">
+    	<blockquote>
+    		<p>Titre : {{ article.getTitre() }}</p>
+    		<p>Auteur : {{ article.getAuteur() }}</p>
+    		<p>Date : {{ (article.getDate()) | date("d-m-Y H:i") }}</p>
+    		<p>{{ article.getContenu() }}</p>
+    	</blockquote>
+    </div>
+    		
+    {% block formulaire %}
+    	<div class="well">
+    		<form method="post" action="" name="ajouter" id="ajouter" enctype="multipart/form-data">
+    			<fieldset>
+    				<div class="form-group">
+    					<label for="titre">Titre :</label>
+    					<input type="text" name="titre" id="titre" value="" placeholder="Insérez un titre" class="form-control">
+    				</div>
+    			</fieldset>
+    		</form>
+    	</div>
+    {% endblock %}
 {% endblock %}

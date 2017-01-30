@@ -11,6 +11,7 @@ namespace BlogBundle\Controller;
 use BlogBundle\Controller\myController as Controller;
 use Symfony\Component\HttpFoundation\Response; // Classe permettant de retourner une réponse HTTP simplement
 use Symfony\Component\HttpFoundation\Request; // Classe permettant d'accéder aux informations de la requête HTTP
+use BlogBundle\Entity\Blog;
 
 class BlogController extends Controller{
 	/**
@@ -88,18 +89,6 @@ class BlogController extends Controller{
 		// $this->generateUrl("blog_ajouter") => http://blog.dev/app_dev.php/blog/ajouter
 		// La méthode $this->redirect() redirige une requête HTTP vers une autre requête HTTP
 		
-		if($action == "ajouter"){
-			return $this->doRedirect("blog_hello");
-			
-			/**return $this->redirect(
-					$this->generateUrl("blog_hello")
-			);
-			
-			$url = $this->generateUrl("blog_hello");
-			return $this->redirect($url);
-			**/
-		}
-		
 		// Charger le post correspondant à l'ID passé en paramètre
 		return $this->render(
 			"BlogBundle:Hello:article.html.twig",
@@ -114,6 +103,31 @@ class BlogController extends Controller{
 	
 	public function ajouterAction(Request $request){
 		$idCree = 5; // Pour l'instant, on va créer une valeur "artificielle"
+		
+		/**
+		 * Récupère le service Doctrine dans la variable $doctrine
+		 * @var Object $doctrine
+		 */
+		$doctrine = $this->get("doctrine");
+		
+		/**
+		 * Depuis le service Doctrine, on veut récupérer le gestionnaire d'entités
+		 *  (Entity Manager)
+		 * @var unknown $manager
+		 */
+		$manager = $doctrine->getManager();
+		
+		$article = new Blog();
+		
+		//$article->setId($idCree);
+		$article->setTitre("Un autre post magique");
+		$article->setPublication(true);
+		$article->setContenu("Changement d'auteur et de statut de publication");
+		
+		// On va demander à Doctrine de faire "persister" l'objet $article en base de données
+		$manager->persist($article);
+		
+		$manager->flush(); // Pour écrire l'ensemble des objets à faire persister
 		
 		// Dans la classe Contrôleur, on récupère un objet Session
 		// et de cet objet Session, on utilise le service getFlashBag()
@@ -134,7 +148,8 @@ class BlogController extends Controller{
 		return $this->render(
 			"BlogBundle:Hello:ajouter.html.twig",
 			array(
-				"date" => date("d-m-Y H:i:s")
+				"date" => date("d-m-Y H:i:s"),
+				"article" => $article // On passe l'instance de l'objet BlogBundle\Entity\Blog
 			)
 		);
 	}
