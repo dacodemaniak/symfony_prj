@@ -83,19 +83,51 @@ class BlogController extends Controller{
 		
 		$action = $httpRequest->query->get("action","voir");
 		
+		/**
+		 * Utilisons les services offerts par le Repository de Doctrine
+		 */
+		$depot = $this->getDoctrine()
+			->getManager()
+			->getRepository("BlogBundle:Blog");
 		
-		// La méthode $this->generateUrl() permet de convertir
-		//	le nom d'une route en une URL :
-		// $this->generateUrl("blog_ajouter") => http://blog.dev/app_dev.php/blog/ajouter
-		// La méthode $this->redirect() redirige une requête HTTP vers une autre requête HTTP
+		/**
+		 * Demande à Doctrine, à partir de l'Entité "Blog" d'alimenter le dépôt
+		 * 	"BlogRepository" avec les données associée à la clé primaire dont la valeur
+		 * 	est $id <=>
+		 * SELECT id,date,titre,contenu,auteur,vues FROM blog WHERE id=$id;
+		 * $article = MaBase->fetch();
+		 * 
+		 * @var Object $article => Contient les informations de la ligne identifiée par $id
+		 * 	de la table blog
+		 */
+		$article = $depot->find($id);
+		
+
+		
+		if(is_null($article)){
+			// Signifie que la méthode find($id) de $depot n'a pas pu aboutir
+			//	Probablement que la valeur $id n'existe plus... dans la base de données
+			throw $this->createNotFoundException("L'article de Blog [" . $id . "] n'existe pas !");
+		}
+		
+		/**
+		 * Attention, on visualise l'article, donc... on doit incrémenter le nombre de vues
+		 */
+		$vuesCourantes = $article->getVues() + 1; // On récupère le nombre de vues courant dans la base
+		//$vuesIncrementees = $vuesCourantes + 1; // Incrémente le nombre de vues
+		
+		/**
+		 * On va enregistrer la nouvelle information dans la base
+		 */
+		$article->setVues($vuesCourantes); // On utilise la méthode setVues()
+		
+		$this->getDoctrine()->getManager()->flush(); // On écrit le tout dans la base de données
 		
 		// Charger le post correspondant à l'ID passé en paramètre
 		return $this->render(
-			"BlogBundle:Hello:article.html.twig",
+			"BlogBundle:Hello:voir.html.twig",
 			array(
-				"id" => $id,
-				"auteur" => "Jean-Luc Aubert",
-				"action" => $action
+				"article" => $article
 			)
 		);
 		
@@ -109,7 +141,8 @@ class BlogController extends Controller{
 		 * @var Object $doctrine
 		 */
 		$doctrine = $this->get("doctrine");
-		
+		// ou... $doctrine = $this->getDoctrine();
+		// Encore plus simple : $manager = $this->getDoctrine()->getManager();
 		/**
 		 * Depuis le service Doctrine, on veut récupérer le gestionnaire d'entités
 		 *  (Entity Manager)
@@ -117,15 +150,21 @@ class BlogController extends Controller{
 		 */
 		$manager = $doctrine->getManager();
 		
-		$article = new Blog();
-		
+		$article = new Blog(); // Instanciation de l'entité Blog (@see Blog.php)
 		//$article->setId($idCree);
-		$article->setTitre("Un autre post magique");
-		$article->setPublication(true);
-		$article->setContenu("Changement d'auteur et de statut de publication");
+		$article->setTitre("Post pour voir comment Doctrine a géré");
+		$article->setPublication(false);
+		$article->setContenu("Utiliser le profiler pour voir les transactions");
+		
+		$autrePost = new Blog();
+		$autrePost->setTitre("Autre objet à persister")
+			->setPublication(true)
+			->setContenu("Pourquoi je peux utiliser cette notation ?")
+			->setAuteur("Jean-Luc");
 		
 		// On va demander à Doctrine de faire "persister" l'objet $article en base de données
 		$manager->persist($article);
+		$manager->persist($autrePost);
 		
 		$manager->flush(); // Pour écrire l'ensemble des objets à faire persister
 		

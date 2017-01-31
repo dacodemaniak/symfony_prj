@@ -55,10 +55,17 @@ class Blog
      */
     private $publication;
     
+    /**
+     * @ORM\Column(name="vues", type="integer")
+     * @var int
+     */
+    private $vues;
+    
     public function __construct(){
     	$this->date = new \DateTime();
     	$this->auteur = "WebDev 2016-2017";
     	$this->publication = false;
+    	$this->vues = 0; // Par défaut, on attribue 0 à la création d'un article
     }
 
     /**
@@ -188,5 +195,28 @@ class Blog
     public function getPublication()
     {
         return $this->publication;
+    }
+
+    /**
+     * Set vues
+     *
+     * @param integer $vues
+     * @return Blog
+     */
+    public function setVues($vues)
+    {
+        $this->vues = $vues;
+
+        return $this;
+    }
+
+    /**
+     * Get vues
+     *
+     * @return integer 
+     */
+    public function getVues()
+    {
+        return $this->vues;
     }
 }

@@ -7,16 +7,12 @@
 #}
 	{% extends "BlogBundle::layout.html.twig" %}
 	
-	{% block title %}{{ parent() }} - Article : {{ id }} : {{ action }}{% endblock %}
+	{% block title %}{{ parent() }} - Article : {{ article.getId() }}{% endblock %}
 	
 	{% block blog_body %}
 		<header>
 			<h1>
-			    {% if action == "ajouter" %}
-			    	Ajouter un article
-			    {% else %}
-			    	Mettre à jour l'article {{ id }}
-			    {% endif %}
+				{{ article.getTitre }}
 			</h1>
 		</header>
 		
