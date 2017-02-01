@@ -19,11 +19,12 @@
 		{% block stylesheets %}
 			<!-- On va utiliser bootstrap !!! -->
 			<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+			<link href="{{ asset("css/icomoon/style.css") }}" rel="stylesheet">
 		{% endblock %}
 	</head>
 	
 	<body>
-		<div class="container">
+		<div class="container-fluid">
 			<header id="main-header">
 				<h1>MyBlog v1.0</h1>
 			</header>
@@ -31,12 +32,13 @@
 			
             {{ render(controller("MenuBundle:Menu:index")) }}
             
-			<main class="content">
+			
+			<main class="content" class="row">
 				{% block body %}
 				{% endblock %}
 			</main>
 			
-			<footer>
+			<footer id="main-footer" class="row">
 				{{ render(controller("MenuBundle:Menu:footer")) }}
 			</footer>
 		</div>

@@ -4,7 +4,7 @@
 	@var menu : Tableau contenant les options de menu
 #}
         <nav>
-        	<ul class="nav nav-pills stacked">
+        	<ul class="">
         		<!--  On va boucler sur le tableau "menu" pour afficher les options -->
         	    {% for item in menu %} {# Boucle principale : Eléments du tableau principal #}
         	    	{# ATTENTION item est désormais un tableau associatif #}
@@ -18,25 +18,6 @@
             			{% else %}
             				<!-- Ici, aucune route n'a été définie, donc... un lien un peu différent -->
             				<a href="#" title="{{ item.titre }}">{{ item.libelle }}</a>
-            			{% endif %}
-            			
-            			{# ATTENTION, y-a-t-il des enfants pour cet item ? 
-            				if(array_key_exists("enfants",$item))
-            				if(property_exists($item,"enfants"))
-            			#}
-            			{% if item.enfants is defined %}
-            				<!-- Liste pour afficher les enfants du node courant -->
-            				<ul>
-            					{% for enfant in item.enfants %}
-            						<li>
-                    				    {% if (enfant.route == "blog_voir") %}
-                    						<a href="{{ path(enfant.route, {id: enfant.identifiant}) }}" title="{{ enfant.titre ~ " [" ~ enfant.identifiant ~ "]" }}">{{ enfant.libelle  ~ " [" ~ enfant.identifiant ~ "]" }}</a>
-                    			        {%  else %}
-                    			    		<a href="{{ path(enfant.route) }}" title="{{ enfant.titre }}">{{ enfant.libelle }}</a>
-                    				    {% endif %}
-                    				</li>  						
-            					{% endfor %}
-            				</ul>
             			{% endif %}
         			</li> <!--  Ferme la ligne parente -->
         	    {% endfor %}

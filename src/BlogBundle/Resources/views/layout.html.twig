@@ -6,6 +6,11 @@
 #}
 {% extends "::app.html.twig" %}
 
+{% block stylesheets %}
+	{{ parent() }}
+	<link href="{{ asset("css/less/styles.css") }}" rel="stylesheet">
+{% endblock %}
+
 {% block title %}MyBlog v.1.0 {{ parent() }}{% endblock %}
 
 {% block body %}

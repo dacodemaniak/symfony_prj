@@ -1,0 +1,133 @@
+/**
+ * styles.less : Support à la création du fichier styles.css
+ * LESS permet de coder des instructions qui produiront au final du CSS
+ */
+ 
+ /**
+  * Définir des variables pour concevoir vos fichiers CSS
+  */
+ @couleur_fond_par_defaut: rgba(128,128,128, 1);
+ @default_title_color: hsla(200, 20%, 15%, 1);
+ 
+ /**
+  * @var color : Définition de la couleur du thème du menu de pied de page
+  */
+ @menu_theme: #555;
+ 
+ /**
+  * Redéfinition des balises HTML
+  */
+body{
+	// Définit la couleur de fond de la balise body
+	background-color: @couleur_fond_par_defaut;
+}
+
+footer{
+	// Dans LESS, il existe des fonctions pratiques... darken, lighten, ...
+	//background-color: darken(@couleur_fond_par_defaut, 20%);
+}
+
+/**
+ * LESS autorise les règles imbriquées
+ */
+#main-header{
+	h1{
+		color: @default_title_color;
+		.bordered(solid 1px lighten(@couleur_fond_par_defaut, 15%), 0, 3px, 0, 3px); // Appelle la fonction, avec les paramètres par défaut...
+	}
+}
+
+.content{
+	article{
+		.bordered(solid 1px #fff, 3px, 0, 3px, 0);
+	}
+}
+
+/**
+ * Définition des règles applicables pour le menu footer
+ */
+ #main-footer{
+ 	nav {
+ 		//width:100%;
+ 		height: 50px;
+ 		.menuborder; // Mixin border défini un peu plus bas
+ 		.shadow; // Mixin défini un peu plus bas
+ 		
+ 		// On définit les règles pour la balise UL dans la hiérarchie
+ 		ul{
+ 			padding: 0;
+ 			margin: 0;
+ 			
+ 			// On définit ce qu'on fait dans les LI
+ 			li{
+ 				display: inline;
+ 				
+ 				// On définit précisément ce qu'on fait avec les liens
+ 				a{
+ 					text-decoration: none;
+ 					display: inline-block;
+ 					float: left;
+ 					width: 160px;
+ 					height: 50px; // C'est bien inherit... c'est comme si j'avais écrit 50px
+ 					line-height: 300%;
+ 					text-align: center;
+ 					.textcolor(#f2f2f2); // Appel au MIXIN défini plus bas
+ 					.divider;
+ 					.gradient;
+ 					&:hover{
+ 						.hovereffect; // Et à nouveau appel au MIXIN défini plus bas, au survol
+ 					}
+ 				}
+ 				// Suppression des bordures sur le premier et le dernier élément
+ 				&:first-child a{
+ 					border-left: none;
+ 				}
+ 				&:last-child a{
+ 					border-right: none;
+ 				}
+ 			}
+ 		}
+ 		
+ 	}
+ }
+
+/**
+ * LESS autorise la création de "fonctions" appelées MIXINS
+ */
+.bordered(@style: solid 1px #000, @topleft: 0.5em, @topright: 0.5em, @bottomleft: 0.5em, @bottomright: 0.5em){
+	border: @style;
+	-moz-border-radius: @topleft @topright @bottomright @bottomleft;
+	-webkit-border-radius: @topleft @topright @bottomright @bottomleft;
+	border-radius: @topleft @topright @bottomright @bottomleft;
+}
+
+.shadow{
+	-moz-box-shadow: 0 1px 2px 0 @menu_theme;
+	-webkit-box-shadow: 0 1px 2px 0 @menu_theme;
+	box-shadow: 0 1px 2px 0 @menu_theme;
+}
+
+ .divider{
+ 		border-style: solid;
+ 		border-width: 0 1px 0 1px;
+ 		border-color: transparent @menu_theme - #111 transparent @menu_theme + #333;
+ 	}
+ 	
+ .gradient{
+ 		background: linear-gradient(top, @menu_theme + #252525 0%, @menu_theme + #171717 50%, @menu_theme - #010101 51%, @menu_theme + #151515 100%);
+ 	}
+ 	
+ .hovereffect{
+		background: linear-gradient(top, @menu_theme - #010101 0%, @menu_theme - #121212 50%, @menu_theme - #222222 51%, @menu_theme - #050505 100%); 		
+ 	}
+ 	
+.menuborder(@radius: 3px){
+	border-radius: @radius;
+	border: solid 1px @menu_theme - #050505; // On peut retrancher ou ajouter des couleurs à des couleurs
+}
+
+.textcolor(@textcolor) when(lightness(@textcolor) >= 50%){
+	color: @textcolor;
+	text-shadow: 1px 1px #000;
+}
+ 
