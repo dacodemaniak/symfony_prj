@@ -16,3 +16,9 @@ blog_ajouter:
 blog_contact: 
     path: /blog/contact
     defaults: { _controller: BlogBundle:Blog:contact }
+categories: 
+    path: /blog/categories
+    defaults: { _controller: BlogBundle:Categorie:addCategories }
+modifier_article: 
+    path: /blog/modifier
+    defaults: { _controller: BlogBundle:Blog:modifier }

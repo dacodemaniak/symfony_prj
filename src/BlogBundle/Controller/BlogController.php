@@ -12,6 +12,7 @@ use BlogBundle\Controller\myController as Controller;
 use Symfony\Component\HttpFoundation\Response; // Classe permettant de retourner une réponse HTTP simplement
 use Symfony\Component\HttpFoundation\Request; // Classe permettant d'accéder aux informations de la requête HTTP
 use BlogBundle\Entity\Blog;
+use BlogBundle\Entity\Commentaire;
 
 class BlogController extends Controller{
 	/**
@@ -23,6 +24,12 @@ class BlogController extends Controller{
 	public function indexAction(){
 		$this->articles = $this->getArticles();
 		
+		$manager = $this->getDoctrine()
+			->getManager();
+		
+		// 1. On va utiliser la méthode findAll() du Respository de Blog pour récupérer tous les articles
+		$articles = $manager->getRepository("BlogBundle:Blog")->findAll();
+		
 		return $this->render(
 			"BlogBundle:Hello:index.html.twig",
 			array(
@@ -30,7 +37,7 @@ class BlogController extends Controller{
 				"titreInterne" => "Symfony exposé par le contrôleur",
 				"majVersion" => 1,
 				"minVersion" => 0,
-				"articles" => $this->articles
+				"articles" => $articles
 			)
 		);
 	}
@@ -152,17 +159,37 @@ class BlogController extends Controller{
 		
 		$article = new Blog(); // Instanciation de l'entité Blog (@see Blog.php)
 		//$article->setId($idCree);
-		$article->setTitre("Post pour voir comment Doctrine a géré");
-		$article->setPublication(false);
-		$article->setContenu("Utiliser le profiler pour voir les transactions");
+		$article->setTitre("Un article et des commentaires");
+		$article->setPublication(true);
+		$article->setContenu("Nouvel article, mais directement avec des commentaires");
+		
+		$commentaire = new Commentaire();
+		$commentaire->setAuteur("Jean-Luc Aubert")
+			->setContenu("Pas mal Symfony, d'un coup, je peux créer un article et des commentaires")
+			->setDate();
+		$commentaire->setBlog($article); // On définit l'entité à laquelle rattacher le commentaire
+		
+		$commentaire2 = new Commentaire();
+		$commentaire2->setAuteur("Coder")
+			->setContenu("Et oui, sans avoir à réfléchir, Doctrine va tout faire à ma place.");
+		$commentaire2->setBlog($article); // Deux commentaires, pour le même article
+		
 		
 		$autrePost = new Blog();
-		$autrePost->setTitre("Autre objet à persister")
+		$autrePost->setTitre("Un autre article avec d'autres commentaires")
 			->setPublication(true)
-			->setContenu("Pourquoi je peux utiliser cette notation ?")
+			->setContenu("La gestion des transactions de Doctrine s'occupe du tout..")
 			->setAuteur("Jean-Luc");
 		
+		$commentaire3 = new Commentaire();
+		$commentaire3->setAuteur("Jean-Luc Aubert")
+			->setContenu("On peut faire tout ce qu'on veut d'un seul coup...\nAttention pourtant à ne pas oublier de faire persister les entités !!!");
+		$commentaire3->setBlog($autrePost);
+		
 		// On va demander à Doctrine de faire "persister" l'objet $article en base de données
+		$manager->persist($commentaire);
+		$manager->persist($commentaire2);
+		$manager->persist($commentaire3);
 		$manager->persist($article);
 		$manager->persist($autrePost);
 		
@@ -189,6 +216,39 @@ class BlogController extends Controller{
 			array(
 				"date" => date("d-m-Y H:i:s"),
 				"article" => $article // On passe l'instance de l'objet BlogBundle\Entity\Blog
+			)
+		);
+	}
+	
+	/**
+	 * Méthode qui permet d'associer un article à TOUTES les catégories
+	 */
+	public function modifierAction(){
+		// Récupère l'Entity Manager
+		$manager = $this->getDoctrine()
+			->getManager();
+		
+		//1. On récupère l'article sur lequel on veut faire une mise à jour
+		$article = $manager->getRepository("BlogBundle:Blog")->find(1);
+		
+		//2. On récupère la totalité des Catégories...
+		$categories = $manager->getRepository("BlogBundle:Categorie")->findAll();
+		
+		//3. On peut boucler sur le tableau des objets Categorie
+		foreach($categories as $categorie){
+			//4. Appelle la méthode addCategory() de l'objet $article
+			$article->addCategory($categorie); // Ajoute la catégorie à la pile
+		}
+		
+		//4. Il ne reste plus qu'à enregistrer le tout...
+		$manager->flush();
+		
+		//5. Une action de contrôleur doit toujours retourner une réponse...
+		return $this->render(
+			"BlogBundle:Hello:articlecategories.html.twig",
+			array(
+				"article" => $article,
+				"categories" => $categories
 			)
 		);
 	}

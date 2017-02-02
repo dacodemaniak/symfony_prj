@@ -3,8 +3,10 @@
 	Etend le template parent src/BlogBundle/Resources/views/layout.html.twig
 	webDev - 2017
 	Variables exposées :
-		pageTitle => Titre de la page qui sera renvoy�e en r�ponse au navigateur
+		pageTitle => Titre de la page qui sera renvoyée en réponse au navigateur
 		innerTitle => Titre à afficher dans le corps du document HTML (SEO Friendly)
+		articles => Tableau qui contient tous les articles de la base de données
+			sous la forme d'objets
 #}
 
 {% extends "BlogBundle::layout.html.twig" %}
@@ -17,9 +19,19 @@
 			<header>
 				<h2>{{ article.titre }}</h2>
 			</header>
-			<p>{{ article.contenu }}</p>
+			<p>{{ article.truncateContenu() }}</p>
+			{% if article.categories.count > 0 %}
+				<div class="panel">
+					<dl>
+    					{% for categorie in article.categories %}
+    						<dt>{{ categorie.libelle }}</dt>
+    						<dd>{{ categorie.description }}</dd>	
+    					{% endfor %}
+					</dl>
+				</div>
+			{% endif %}
 			<footer>
-				Créé par {{ article.auteur }}, le {{ article.date | date("d-m-Y") }}
+				<cite>Créé par {{ article.auteur }}</cite>, le {{ article.date | date("d-m-Y") }}
 			</footer>
 		</article>
 	{% endfor %}

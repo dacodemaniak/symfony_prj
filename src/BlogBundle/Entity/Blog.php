@@ -61,6 +61,12 @@ class Blog
      */
     private $vues;
     
+    /**
+     * @ORM\ManyToMany(targetEntity="BlogBundle\Entity\Categorie", cascade={"persist"})
+     * @var ArrayCollection
+     */
+    private $categories;
+    
     public function __construct(){
     	$this->date = new \DateTime();
     	$this->auteur = "WebDev 2016-2017";
@@ -196,7 +202,13 @@ class Blog
     {
         return $this->publication;
     }
-
+	
+    public function truncateContenu(){
+    	if(strlen($this->contenu) > 30)
+    		return substr($this->contenu, 0, 30) . " ...";
+    	
+    	return $this->contenu;
+    }
     /**
      * Set vues
      *
@@ -218,5 +230,38 @@ class Blog
     public function getVues()
     {
         return $this->vues;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \BlogBundle\Entity\Categorie $categories
+     * @return Blog
+     */
+    public function addCategory(\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategory(\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }
