@@ -22,6 +22,15 @@
         			{{ article.getContenu() }}
         		</p>
         		
+        		{# On peut désormais utiliser la méthode getCommentaires() ou .commentaires #}
+        		{% if(article.commentaires.count > 0) %}
+        			{% for commentaire in article.commentaires %}
+        				<div class="thumbnail">
+        					{{ commentaire.contenu }}
+        					<cite>Par : {{ commentaire.auteur }} <span>{{ commentaire.date | date("d-m-Y") }}</span></cite>
+        				</div>
+        			{% endfor %}
+        		{% endif %}
         		<footer>
         			<cite>Auteur : {{ article.getAuteur() }}</cite>
         			Date : {{ (article.getDate()) | date("d-m-Y H:i") }}

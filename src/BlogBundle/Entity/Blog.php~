@@ -3,6 +3,7 @@
 namespace BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Blog
@@ -66,6 +67,14 @@ class Blog
      * @var ArrayCollection
      */
     private $categories;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Commentaire", mappedBy="blog")
+     * @var ArrayCollection
+     * 	targetEntity => Entité cible de la relation bi-directionnelle
+     * 	mappedBy => Définit le nom de l'attribut dans l'entité Propriétaire qui fait la relation avec l'entité courante.
+     */
+    private $commentaires;
     
     public function __construct(){
     	$this->date = new \DateTime();
@@ -202,7 +211,13 @@ class Blog
     {
         return $this->publication;
     }
-
+	
+    public function truncateContenu($size=50){
+    	if(strlen($this->contenu) > $size)
+    		return substr($this->contenu, 0, $size) . " ...";
+    	
+    	return $this->contenu;
+    }
     /**
      * Set vues
      *
@@ -224,5 +239,38 @@ class Blog
     public function getVues()
     {
         return $this->vues;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param \BlogBundle\Entity\Categorie $categories
+     * @return Blog
+     */
+    public function addCategory(\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param \BlogBundle\Entity\Categorie $categories
+     */
+    public function removeCategory(\BlogBundle\Entity\Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Get categories
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

@@ -43,9 +43,11 @@ class Commentaire
     private $contenu;
 	
     /**
-     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\Blog")
+     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\Blog", inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      * @var /Entity/Blog
+     * 	inversedBy définit le nom de l'attribut de la relation bi-directionnelle
+     * 	dans l'Entité inverse.
      */
 	private $blog;
 	

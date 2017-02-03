@@ -12,4 +12,20 @@ use Doctrine\ORM\EntityRepository;
  */
 class CommentaireRepository extends EntityRepository
 {
+	/**
+	 * C'est juste la réécriture de getDoctrine()->getManager()->getRepository("BlogBundle:Commentaire")->findAll()
+	 * @return ArrayCollection
+	 */
+	public function allComments(){
+		$queryBuilder = $this->createQueryBuilder("c");
+		
+		/**
+		 * Magique : getQuery()
+		 * SELECT c.id, c.contenu, c.auteur, c.date FROM commentaire
+		 * @var unknown $query
+		 */
+		$query = $queryBuilder->getQuery();
+		
+		return $query->getResult(); // Retourne toutes les lignes de la table Commentaire
+	}
 }

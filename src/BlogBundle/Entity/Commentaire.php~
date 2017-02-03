@@ -27,7 +27,7 @@ class Commentaire
      * @ORM\Column(name="date", type="datetime")
      */
     private $date;
-
+	
     /**
      * @var string
      *
@@ -43,9 +43,11 @@ class Commentaire
     private $contenu;
 	
     /**
-     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\Blog")
+     * @ORM\ManyToOne(targetEntity="BlogBundle\Entity\Blog", inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      * @var /Entity/Blog
+     * 	inversedBy définit le nom de l'attribut de la relation bi-directionnelle
+     * 	dans l'Entité inverse.
      */
 	private $blog;
 	
@@ -68,10 +70,13 @@ class Commentaire
      * @param \DateTime $date
      * @return Commentaire
      */
-    public function setDate($date)
+    public function setDate(\DateTime $date=null)
     {
-        $this->date = $date;
-
+    	if(!is_null($date))
+        	$this->date = $date;
+		else 
+			$this->date = new \DateTime();
+		
         return $this;
     }
 
@@ -129,5 +134,28 @@ class Commentaire
     public function getContenu()
     {
         return $this->contenu;
+    }
+
+    /**
+     * Set blog
+     *
+     * @param \BlogBundle\Entity\Blog $blog
+     * @return Commentaire
+     */
+    public function setBlog(\BlogBundle\Entity\Blog $blog)
+    {
+        $this->blog = $blog;
+
+        return $this;
+    }
+
+    /**
+     * Get blog
+     *
+     * @return \BlogBundle\Entity\Blog 
+     */
+    public function getBlog()
+    {
+        return $this->blog;
     }
 }

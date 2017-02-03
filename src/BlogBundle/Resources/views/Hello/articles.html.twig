@@ -1,0 +1,53 @@
+{#
+	src/BlogBundle/Resources/views/Hello/voir.html.twig
+	Etend src/BlogBundle/Resources/views/layout.html.twig
+	webDev - 2017
+	Variables exposées :
+		articles => Articles récupérés en fonction de certains critères
+#}
+	{% extends "BlogBundle::layout.html.twig" %}
+	
+	{% block title %}{{ parent() }} - Articles{% endblock %}
+	
+	{% block blog_body %}
+		
+		<main>
+			{% if articles|length > 0 %}
+				{% for article in articles %}
+        			<article>
+                		<header>
+                			<h1>
+                				{{ article.titre }}
+                			</h1>
+                		</header>
+                		<p>
+                			{{ article.getContenu() }}
+                		</p>
+                		
+                		{# On peut désormais utiliser la méthode getCommentaires() ou .commentaires #}
+                		{% if(article.commentaires.count > 0) %}
+                			{% for commentaire in article.commentaires %}
+                				<div class="thumbnail">
+                					{{ commentaire.contenu }}
+                					<cite>Par : {{ commentaire.auteur }} <span>{{ commentaire.date | date("d-m-Y") }}</span></cite>
+                				</div>
+                			{% endfor %}
+                		{% endif %}
+                		<footer>
+                			<cite>Auteur : {{ article.getAuteur() }}</cite>
+                			Date : {{ (article.getDate()) | date("d-m-Y H:i") }}
+                			<p>Vu <span class="badge">{{ article.getVues() }}</span> fois.</p>
+                		</footer>			
+        			</article>
+    		    {% endfor %}
+			{% else %}
+				<div class="well">
+					Désolé, mais aucun article ne correspond à votre demande.
+				</div>
+			{% endif %}
+		</main>
+		
+		<footer>
+			Powered by Symfony 2.8
+		</footer>
+	{% endblock %}

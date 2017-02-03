@@ -28,8 +28,14 @@ class BlogController extends Controller{
 			->getManager();
 		
 		// 1. On va utiliser la méthode findAll() du Respository de Blog pour récupérer tous les articles
-		$articles = $manager->getRepository("BlogBundle:Blog")->findAll();
-		
+		//$articles = $manager->getRepository("BlogBundle:Blog")->findAll();
+		$articles = $manager->getRepository("BlogBundle:Blog")
+			->findBy(
+				array(), 
+				array("date" => "desc"),
+				5,
+				0
+			);
 		return $this->render(
 			"BlogBundle:Hello:index.html.twig",
 			array(
@@ -40,6 +46,65 @@ class BlogController extends Controller{
 				"articles" => $articles
 			)
 		);
+	}
+	
+	/**
+	 * Méthode permettant de récupérer les articles de manière différentes
+	 * @param Request $httpRequest
+	 */
+	public function getArticlesAction(Request $httpRequest){
+		$auteur = $httpRequest->query->get("auteur",null);
+		$date = $httpRequest->query->get("date",null);
+		$publication = $httpRequest->query->get("publication",null);
+		
+		$repo = $this->getDoctrine()
+			->getManager()
+			->getRepository("BlogBundle:Blog"); // Récupère le dépôt de l'entité Blog
+		
+		// Définition des critères de la requête
+		$criteres = array();
+		if(!is_null($auteur)){
+			$criteres["auteur"] = $auteur;
+		}
+		if(!is_null($date)){
+			$criteres["date"] = new \DateTime($date);
+		}
+		if(!is_null($publication)){
+			$criteres["publication"] = $publication;
+		}
+		
+		$articles = $repo->findBy($criteres);
+		
+		return $this->render("BlogBundle:Hello:articles.html.twig",
+				array(
+					"articles" => $articles
+		));
+		
+	}
+	
+	public function byAuteurAction(Request $httpRequest){
+		$auteur = $httpRequest->query->get("auteur", "JLA");
+		
+		$manager = $this->getDoctrine()->getManager();
+		
+		/**
+		 * Utilisation de la méthode findBy() de l'Entity Manager
+		 * 	@param array $criteres : critère de restriction
+		 *  @param array [optionnel] : $orderBy => critères de tri
+		 *  @param int $limite [optionnel] => Nombre de lignes à retourner
+		 *  @param int $offset [optionnel] => A partir de quel ligne on commence la requête
+		 * @var \ArrayCollection $articles
+		 */
+		/*$articles = $manager->getRepository("BlogBundle:Blog")
+			->findBy(
+				array("auteur" => $auteur)
+			);
+		*/
+		$articles = $manager->getRepository("BlogBundle:Blog")->findByAuteur($auteur);
+		return $this->render("BlogBundle:Hello:articleByAuteur.html.twig",
+				array(
+					"articles" => $articles
+				));
 	}
 	
 	private function queryGet($param,$defaultValue=null){

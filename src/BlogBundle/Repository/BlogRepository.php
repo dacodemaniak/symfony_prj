@@ -12,4 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class BlogRepository extends EntityRepository
 {
+	/**
+	 * Retourne les articles postés durant l'année courante
+	 */
+	public function getArticleByYear(){
+		$currentDate = new \DateTime();
+		$currentYear = $currentDate->format("Y"); // Année courante
+		
+		$queryBuilder = $this->createQueryBuilder("b");
+		
+		$queryBuilder->where("b.date >= :newyearday")
+			->setParameter("newyearday", $currentYear . "01-01")
+			->andWhere("b.date <= :slyday")
+			->setParameter("slyday", $currentYear . "12-31");
+		
+		return $queryBuilder->getQuery()->getResult(); 
+		
+	}
 }

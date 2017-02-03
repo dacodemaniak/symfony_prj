@@ -22,3 +22,9 @@ categories:
 modifier_article: 
     path: /blog/modifier
     defaults: { _controller: BlogBundle:Blog:modifier }
+blog_auteur: 
+    path: /blog/auteur
+    defaults: { _controller: BlogBundle:Blog:byAuteur }
+blog_articles: 
+    path: /blog/articles
+    defaults: { _controller: BlogBundle:Blog:getArticles }
