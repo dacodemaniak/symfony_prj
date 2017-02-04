@@ -63,10 +63,11 @@ class Blog
     private $vues;
     
     /**
-     * @ORM\ManyToMany(targetEntity="BlogBundle\Entity\Categorie", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="BlogBundle\Entity\Categorie", cascade={"persist"}, inversedBy="articles")
      * @var ArrayCollection
      */
     private $categories;
+    
     
     /**
      * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Commentaire", mappedBy="blog")
@@ -77,6 +78,8 @@ class Blog
     private $commentaires;
     
     public function __construct(){
+    	$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+    	
     	$this->date = new \DateTime();
     	$this->auteur = "WebDev 2016-2017";
     	$this->publication = false;
@@ -306,4 +309,5 @@ class Blog
     {
         return $this->commentaires;
     }
+
 }

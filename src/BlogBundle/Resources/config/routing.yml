@@ -28,3 +28,6 @@ blog_auteur:
 blog_articles: 
     path: /blog/articles
     defaults: { _controller: BlogBundle:Blog:getArticles }
+blog_bycat: 
+     path: /blog/categorie/{id}
+     defaults: { _controller: BlogBundle:Categorie:voir }

@@ -1,0 +1,45 @@
+{#
+	src/BlogBundle/Resources/views/Hello/voir.html.twig
+	Etend src/BlogBundle/Resources/views/layout.html.twig
+	webDev - 2017
+	Variables exposées :
+		article => Données d'un article en particulier
+#}
+	{% extends "BlogBundle::layout.html.twig" %}
+	
+	{% block title %}{{ parent() }} - {{ categorie.getId() }}{% endblock %}
+	
+	{% block blog_body %}
+		
+		<main>
+			<header>
+				<h2>Tous les articles de la catégorie {{ categorie.libelle }}</h2>
+			</header>
+			{% if categorie.blogs.count > 0 %}
+				{% for article in categorie.blogs %}
+        			<article>
+                		<header>
+                			<h3>
+                				{{ article.titre }}
+                			</h3>
+                		</header>
+                		<p>
+                			{{ article.getContenu() }}
+                		</p>
+                		<a href="{{ path("blog_voir", {id: article.id}) }}" class="btn btn-success" role="button">
+                			En savoir plus...
+                		</a>
+                		<footer>
+                			<cite>Auteur : {{ article.getAuteur() }}</cite>
+                			Date : {{ (article.getDate()) | date("d-m-Y H:i") }}
+                			<p>Vu <span class="badge">{{ article.getVues() }}</span> fois.</p>
+                		</footer>			
+        			</article>
+        		{% endfor %}
+        	{% endif %}
+		</main>
+		
+		<footer>
+			Powered by Symfony 2.8
+		</footer>
+	{% endblock %}

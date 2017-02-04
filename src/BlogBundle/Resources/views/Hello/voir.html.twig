@@ -31,6 +31,16 @@
         				</div>
         			{% endfor %}
         		{% endif %}
+        		
+        		{% if (article.categories.count > 0) %}
+        			<dl>
+        			{%  for categorie in article.categories %}
+        				<dt><a href="{{ path("blog_bycat", {id: categorie.getId()}) }}" title="Voir tous les articles de la catégorie {{ categorie.libelle }}">{{ categorie.libelle }}</a></dt>
+        				<dd>{{ categorie.description }}</dd>
+        			{% endfor %}
+        			</dl>
+        		{% endif %}
+        		
         		<footer>
         			<cite>Auteur : {{ article.getAuteur() }}</cite>
         			Date : {{ (article.getDate()) | date("d-m-Y H:i") }}

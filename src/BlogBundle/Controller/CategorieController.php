@@ -35,4 +35,16 @@ class CategorieController extends Controller{
 		
 		return new Response("Okay, je viens de créer 3 catégories");
 	}
+	
+	public function voirAction($id){
+		$depot = $this->getDoctrine()
+			->getManager()
+			->getRepository("BlogBundle:Categorie");
+		$categorie = $depot->find($id);
+		
+		return $this->render(
+				"BlogBundle:Hello:categorie.html.twig",
+				array("categorie" => $categorie)
+			);
+	}
 }
