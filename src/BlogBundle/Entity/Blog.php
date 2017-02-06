@@ -63,7 +63,7 @@ class Blog
     private $vues;
     
     /**
-     * @ORM\ManyToMany(targetEntity="BlogBundle\Entity\Categorie", cascade={"persist"}, inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity="BlogBundle\Entity\Categorie", cascade={"persist"}, inversedBy="blogs")
      * @var ArrayCollection
      */
     private $categories;

@@ -2,8 +2,8 @@
 	src/BlogBundle/Resources/views/Hello/voir.html.twig
 	Etend src/BlogBundle/Resources/views/layout.html.twig
 	webDev - 2017
-	Variables exposÈes :
-		article => DonnÈes d'un article en particulier
+	Variables expos√©es :
+		categorie => Donn√©es d'une cat√©gorie en particulier
 #}
 	{% extends "BlogBundle::layout.html.twig" %}
 	
@@ -13,10 +13,10 @@
 		
 		<main>
 			<header>
-				<h2>Tous les articles de la catÈgorie {{ categorie.libelle }}</h2>
+				<h2>Tous les articles de la cat√©gorie {{ categorie.libelle }}</h2>
 			</header>
 			{% if categorie.blogs.count > 0 %}
-				{% for article in categorie.blogs %}
+				{% for article in categorie.blogs %} {# categorie.getBlogs() #}
         			<article>
                 		<header>
                 			<h3>

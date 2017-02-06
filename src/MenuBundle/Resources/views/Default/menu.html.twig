@@ -34,7 +34,7 @@
         	    	{% endif %}
         			
         			{% if (item.route != "") %}
-            			{% if (item.route == "blog_voir") %}
+            			{% if (item.route == "blog_voir" or item.route == "blog_bycat") %}
             				<a href="{{ path(item.route, {id: item.identifiant}) }}" title="{{ item.titre ~ " [" ~ item.identifiant ~ "]" }}">{{ item.libelle  ~ " [" ~ item.identifiant ~ "]" }}</a>
             			{%  else %}
             			    <a href="{{ path(item.route) }}" title="{{ item["titre"] }}">{{ item.libelle }}</a>
@@ -53,7 +53,7 @@
             				<ul class="dropdown-menu">
             					{% for enfant in item.enfants %}
             						<li>
-                    				    {% if (enfant.route == "blog_voir") %}
+                    				    {% if (enfant.route == "blog_voir" or enfant.route == "blog_bycat") %}
                     						<a href="{{ path(enfant.route, {id: enfant.identifiant}) }}" title="{{ enfant.titre ~ " [" ~ enfant.identifiant ~ "]" }}">{{ enfant.libelle  ~ " [" ~ enfant.identifiant ~ "]" }}</a>
                     			        {%  else %}
                     			    		<a href="{{ path(enfant.route) }}" title="{{ enfant.titre }}">{{ enfant.libelle }}</a>

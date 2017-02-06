@@ -12,4 +12,65 @@ use Doctrine\ORM\EntityRepository;
  */
 class CategorieRepository extends EntityRepository
 {
+	
+	public function findAllCategories(){
+		$query = $this->_em->createQuery("SELECT c FROM BlogBundle:Categorie c");
+		return $query->getResult();
+	}
+	
+	public function allCategories(){
+		$qb = $this->createQueryBuilder("c");
+		$qb = $this->orderClause($qb) // Méthode privé chaînable retournant le queryBuilder
+			->getQuery()
+			->getResult(); // <=> findAll()
+	}
+	
+	public function allCategoriesOrdered($useOrderBy = true){
+		$queryBuilder = $this->createQueryBuilder("c");
+		
+		// Appelle la méthode privée orderClause sur l'objet queryBuilder courant
+		if($useOrderBy)
+			$queryBuilder = $this->orderClause($queryBuilder);
+		
+		return $queryBuilder->getQuery()
+			->getResult();
+		
+	}
+	
+	public function PHPCategories(){
+		$queryBuilder = $this->createQueryBuilder("c");
+		
+		// On peut utiliser une méthode "where" pour restreindre le résultat
+		$queryBuilder->where("c.libelle = :titre")
+			->setParameter("titre", "Symfony");
+		
+		$queryBuilder = $this->orderClause($queryBuilder); // Mon order by est déjà fait !
+		
+		return $queryBuilder->getQuery()
+			->getResult();
+	}
+	
+	public function allCategoriesByLibelle(){
+		return $this->createQueryBuilder("c")
+			->orderBy("c.libelle", "ASC")
+			->getQuery()
+			->getResult();
+	}
+	
+	public function allCategoriesBy($order, $direction="ASC"){
+		$queryBuilder = $this->createQueryBuilder("c");
+		
+		// On peut donc trier comme on veut...
+		$queryBuilder->orderBy($order,$direction);
+		
+		// Puis retourner le résultat
+		return $queryBuilder->getQuery()
+			->getResult();
+	}
+	
+	private function orderClause(\Doctrine\ORM\QueryBuilder $queryBuilder){
+		$queryBuilder->orderBy("c.libelle", "ASC");
+		
+		return $queryBuilder; // Retourne l'objet QueryBuilder
+	}
 }
