@@ -18,6 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use BlogBundle\Form\BlogType;
+use BlogBundle\Form\BlogAddType;
 
 class BlogController extends Controller{
 	/**
@@ -402,11 +403,14 @@ class BlogController extends Controller{
 				->getManager()
 				->getRepository("BlogBundle:Blog")
 				->find($id);
+			
+			$formulaire = $this->createForm(BlogType::class, $blog);
 		} else {
 			$blog = new Blog;
+			$formulaire = $this->createForm(BlogAddType::class, $blog);
 		}
 		
-		$formulaire = $this->createForm(BlogType::class, $blog);
+		//$formulaire = $this->createForm(BlogType::class, $blog);
 			
 		if($request->getMethod() == "POST"){
 			$formulaire->handleRequest($request);
@@ -414,7 +418,16 @@ class BlogController extends Controller{
 			if($formulaire->isValid()){
 				$em = $this->getDoctrine()->getManager();
 				if($id == 0){
+					// Attention, on doit faire l'upload avant la persistence
+					$blog->upload();
 					$em->persist($blog);
+				}
+				// Attention, des commentaires peuvent être ajoutés
+				if(!is_null($blog->getCommentaires())){
+					foreach($blog->getCommentaires() as $commentaire){
+						$commentaire->setBlog($blog);
+						$em->persist($commentaire);
+					}
 				}
 				$em->flush();
 				

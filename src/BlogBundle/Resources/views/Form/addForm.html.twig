@@ -18,3 +18,97 @@
 		{{ form_end(form) }}
 	</div>
 {% endblock %}
+
+	{# 
+		Javascript pour gérer le formulaire de gestion des commentaires à partir de 
+		l'attribut data-prototype généré par Symfony sur le add("commentaires")
+	#}
+	{%  block javascripts %}
+		
+		{{ parent() }}
+		
+    	<script charset="utf-8">
+    		$(document).ready(function(){
+    			// Récupère la "div" qui contient le prototype pour Commentaires
+    			var $container = $("div#blogbundle_blog_commentaires");
+    
+    			// Crée un "bouton" pour indiquer qu'on peut ajouter un commentaire
+    			var $btnAjout = $('<a href="#" role="button" id="ajout_commentaire" class="btn btn-success">Nouveau</a>');
+    
+    			// Ajoute le nouveau bouton au Document Object Model (DOM)
+    			$container.append($btnAjout); // Ou $btnAjout.appendTo($container)
+    
+    			// Que doit faire le bouton $btnAjout et à quel moment il doit le faire...
+    			$btnAjout.on("click",function(event){
+    				// Appeler la fonction ajouteCommentaire() qui va ajouter le formulaire lui-même
+    				ajouterCommentaire($container);
+    				event.preventDefault(); // Empêche l'exécution de l'action par défaut...
+    				return false;
+    			});
+    
+    			// Il faut aussi être capable de compter le nombre de formulaires "Commentaires"
+    			// pour permettre le création de champs "uniques"
+    			var index = $container.find(":input").length;
+    
+    			if(index == 0){
+    				// Ca veut juste dire que je n'ai pas encore de formulaire pour les commentaires
+    				ajouterCommentaire($container); // On en crée un par défaut...
+    			} else {
+    				// J'ai déjà des formulaires pour les commentaires...
+    				// Ce serait pas mal de pouvoir autoriser leur... suppression
+    				$container.children("div").each(function(){
+        				ajouterSuppression($(this));
+        			});
+    			}
+    			
+    			// $_POST => array(
+    			//	"champ" => "valeur",
+    			//	"champ1" => "valeur",
+    			//	...
+    			//	"date_1" => "2017-02-09",
+    			//	"auteur_1" => "JLA",
+    			//	"contenu_1" => "Sympa l'article",
+    			//	"date_2" => "2017-02-09",
+    			//	"auteur_2" => "JLA",
+    			//	"contenu_2" => "Sympa l'article",
+    			
+    			//	)
+    			// Définition de la fonction ajouterCommentaire($container)
+    			function ajouterCommentaire($container){
+    				// Récupérer l'attribut data-prototype de $container
+    				// Remplacer les attributs name par quelque chose comme commentaire_1
+    				//var $prototype = $($container.data("prototype"));
+    				var datas = $container.data("prototype");
+    				
+    				// Remplace "__name__label__" par Commentaire n° XX
+    				name_label = datas.replace(/__name__label__/g,"Commentaire [" + (index + 1) + "]");
+    				// Remplace le motif "__name__" par la valeur de l'index
+    				name = name_label.replace(/__name__/g, index);
+
+    				var $prototype = $(name);
+    				
+    				// Ajoute l'objet au DOM
+    				$container.append($prototype); // J'ai trois nouveaux champs... pour le commentaire
+    				// Tant qu'on y est... ajouter le bouton pour le supprimer
+    				ajouterSuppression($prototype);
+    				
+    				// On en profite pour incrémenter l'index...
+    				index++; // Pour que la prochaine série de champs de commentaires soit différente
+    			}
+
+    			// Fonction qui ajoute un bouton pour supprimer le formulaire
+    			function ajouterSuppression($leFormulaire){
+        			$suppBtn = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+        			// On ajoute l'objet au DOM
+        			$leFormulaire.append($suppBtn);
+
+        			// Expliquer ce que fait le bouton... sinon, ça ne sert à rien
+        			$suppBtn.on("click", function(event){
+            			$leFormulaire.remove(); // On enlève le formulaire du DOM
+            			event.preventDefault();
+            			return false;
+            		});
+        		}
+    		});
+    	</script>
+    {% endblock %}

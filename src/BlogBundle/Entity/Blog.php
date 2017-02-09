@@ -4,6 +4,7 @@ namespace BlogBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Blog
@@ -68,6 +69,23 @@ class Blog
      */
     private $categories;
     
+    /**
+     * @ORM\Column(name="fileurl", type="string", length=255)
+     * @var unknown
+     */
+    private $fileUrl;
+    
+    /**
+     * @ORM\Column(name="filealt", type="string", length=255)
+     * @var unknown
+     */
+    private $fileAlt;
+    
+    /**
+     * Pas de mappage dans la base... Il s'agit du fichier lui-même
+     * @var unknown
+     */
+    private $file;
     
     /**
      * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Commentaire", cascade={"persist"}, mappedBy="blog")
@@ -84,6 +102,8 @@ class Blog
     	$this->auteur = "WebDev 2016-2017";
     	$this->publication = false; // Tant que c'est faux, normalement le post n'est pas publié
     	$this->vues = 0; // Par défaut, on attribue 0 à la création d'un article
+    	$this->fileUrl = "";
+    	$this->fileAlt = "";
     }
 
     /**
@@ -306,4 +326,87 @@ class Blog
         return $this->commentaires;
     }
 
+
+    /**
+     * Set fileUrl
+     *
+     * @param string $fileUrl
+     * @return Blog
+     */
+    public function setFileUrl($fileUrl)
+    {
+        $this->fileUrl = $fileUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get fileUrl
+     *
+     * @return string 
+     */
+    public function getFileUrl()
+    {
+        return $this->fileUrl;
+    }
+
+    /**
+     * Set fileAlt
+     *
+     * @param string $fileAlt
+     * @return Blog
+     */
+    public function setFileAlt($fileAlt)
+    {
+        $this->fileAlt = $fileAlt;
+
+        return $this;
+    }
+
+    /**
+     * Get fileAlt
+     *
+     * @return string 
+     */
+    public function getFileAlt()
+    {
+        return $this->fileAlt;
+    }
+    
+    public function getFile(){
+    	return $this->file;
+    }
+    
+    public function setFile($file){
+    	$this->file = $file;
+    	return $this;
+    }
+    
+    /**
+     * Télécharge un fichier client vers le serveur...
+     * et permet de "stocker" en base de données les références à ce fichier :
+     * 	fileUrl et fileAlt
+     */
+    public function upload(){
+    	if(null === $this->file){
+    		return; // Pas la peine de faire quoi que ce soit, le client n'a pas utilisé le champ de type FILE
+    	}
+    	
+    	// Récupérons le nom original du fichier...
+    	$fileName = $this->file->getClientOriginalName(); // <=> $_FILES["file"]["name"]
+    	
+    	// Déplacer le fichier du dossier temp vers le dossier qui nous intéresse
+    	$this->file->move($this->getUploadRootDir(), $fileName);
+    	
+    	// On récupère le nom pour le ventiler dans fileUrl et fileAlt
+    	$this->fileUrl = $fileName;
+    	$this->fileAlt = "Fichier : " . $fileName;
+    }
+    
+    /**
+     * Retourne le chemin relatif vers le dossier de stockage des fichiers
+     */
+    protected function getUploadRootDir(){
+    	return __DIR__ . "/../../../web/_repository/";
+    }
 }

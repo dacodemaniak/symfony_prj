@@ -5,7 +5,7 @@
 	Définit les blocs qui pourront (ou pas) être surchargés par les templates enfants
 	utilisateur : Objet contenant les caractéristiques de l'utilisateur
 #}
-{% extends utilisateur.getLayout() %}
+{% extends "::app.html.twig" %}
 
 {% block stylesheets %}
 	{{ parent() }}
