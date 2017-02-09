@@ -3,8 +3,9 @@
 	Template parent qui sert aux templates enfants pour surcharge
 	Etend ::app.html.twig (Template défini à la racine de notre application
 	Définit les blocs qui pourront (ou pas) être surchargés par les templates enfants
+	utilisateur : Objet contenant les caractéristiques de l'utilisateur
 #}
-{% extends "::app.html.twig" %}
+{% extends utilisateur.getLayout() %}
 
 {% block stylesheets %}
 	{{ parent() }}

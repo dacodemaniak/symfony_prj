@@ -20,8 +20,8 @@ categories:
     path: /blog/categories
     defaults: { _controller: BlogBundle:Categorie:addCategories }
 modifier_article: 
-    path: /blog/modifier
-    defaults: { _controller: BlogBundle:Blog:modifier }
+    path: /blog/modifier/{id}
+    defaults: { _controller: BlogBundle:Blog:updateArticle }
 blog_auteur: 
     path: /blog/auteur
     defaults: { _controller: BlogBundle:Blog:byAuteur }
@@ -31,3 +31,9 @@ blog_articles:
 blog_bycat: 
      path: /blog/categorie/{id}
      defaults: { _controller: BlogBundle:Categorie:voir }
+blog_addform: 
+    path: /blog/addform
+    defaults: { _controller: BlogBundle:Blog:addArticle }
+manage_article: 
+    path: /blog/manage/{id}
+    defaults: { _controller: BlogBundle:Blog:manageArticle, id: 0 }

@@ -31,6 +31,7 @@
 				</div>
 			{% endif %}
 			<a class="btn btn-success pull-right" role="button" href="{{ path("blog_voir", {id: article.id}) }}" title="Voir l'article {{ article.titre }}">En savoir plus...</a>
+			<a href="{{ path("modifier_article", {id: article.id}) }}" title="Mettre à jour" role="button" class="btn btn-warning">Mettre à jour</a>
 			<footer>
 				<cite>Créé par {{ article.auteur }}</cite>, le {{ article.date | date("d-m-Y") }}
 			</footer>

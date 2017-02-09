@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\Response; // Classe permettant de retourner
 use Symfony\Component\HttpFoundation\Request; // Classe permettant d'accéder aux informations de la requête HTTP
 use BlogBundle\Entity\Blog;
 use BlogBundle\Entity\Commentaire;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use BlogBundle\Form\BlogType;
 
 class BlogController extends Controller{
 	/**
@@ -283,6 +288,150 @@ class BlogController extends Controller{
 				"article" => $article // On passe l'instance de l'objet BlogBundle\Entity\Blog
 			)
 		);
+	}
+	
+	/**
+	 * Utilisation du FormBuilder de Symfony pour créer et afficher un formulaire
+	 */
+	public function addFormAction(Request $request){
+		// Instanciation de l'objet à hydrater
+		$blog = new Blog();
+		
+		// Instancier un nouvel objet de formulaire via createFormBuilder
+		$formBuilder = $this->createFormBuilder($blog);
+		
+		// Expliquons à l'outil formBuilder comment il est constitué
+		$formBuilder
+			->add("date", DateTimeType::class, array("label" => "Date de création")) // Paramètre 1 => attribut de l'objet concerné, Paramètre 2 : type de contrôle dans le formulaire
+			->add("titre", TextType::class, array("required" => true, "attr" => array("class" => "form-control")))
+			->add("contenu", TextareaType::class, array("required" => true))
+			->add("auteur", TextType::class, array("required" => true))
+			->add("addBtn", SubmitType::class, array("label" => "Ajouter", "attr" => array("class" => "btn btn-primary")));
+		
+		// Demander à l'outil Builder de générer le formulaire
+		$formulaire = $formBuilder->getForm();
+		
+		// Voyons si des données ont été postées, en s'appuyant sur le service Request
+		if($request->getMethod() == "POST"){
+			
+			// Des données ont été postées... (donc via un formulaire), on les récupère
+			$formulaire->handleRequest($request);
+			
+			// On demande si le formulaire est valide... (éviter les attaques)
+			if($formulaire->isValid()){
+				$em = $this->getDoctrine()->getManager();
+				$em->persist($blog);
+				$em->flush(); // Ecrit les données dans la base physiquement
+				
+				// On peut afficher le résultat... directement
+				return $this->redirect(
+						$this->generateUrl("blog_voir", array("id" => $blog->getId()))
+					);
+				// Plus court... utiliser le raccourci redirectToRoute()
+				// return $this->redirectToRoute("blog_voir", array("id" => $blog->getId())
+			}
+		}
+		
+
+		
+		// On peut donc afficher la vue correpondante avec le formulaire...
+		return $this->render(
+				"BlogBundle:Form:addForm.html.twig",
+				array(
+					"form" => $formulaire->createView() // Crée les champs HTML correspondant à chaque "attribut" du formulaire $formulaire
+				)
+			);
+			
+	}
+	
+	public function addArticleAction(Request $request){
+		$blog = new Blog(); // Instanciation de l'objet support du formulaire
+		
+		$formulaire = $this->createForm(BlogType::class, $blog);
+		
+		if($request->getMethod() == "POST"){
+			$formulaire->handleRequest($request);
+			
+			if($formulaire->isValid()){
+				$em = $this->getDoctrine()->getManager();
+				$em->persist($blog);
+				$em->flush();
+				
+				return $this->redirectToRoute("blog_voir",array("id" => $blog->getId()));
+			}
+		}
+		
+		return $this->render(
+			"BlogBundle:Form:addForm.html.twig",
+			array(
+				"form" => $formulaire->createView()		
+			)
+		);
+	}
+	
+	public function updateArticleAction($id, Request $request){
+		$blog = $this->getDoctrine()
+			->getManager()
+			->getRepository("BlogBundle:Blog")
+			->find($id);
+		
+			$formulaire = $this->createForm(BlogType::class, $blog);
+			
+			if($request->getMethod() == "POST"){
+				$formulaire->handleRequest($request);
+					
+				if($formulaire->isValid()){
+					$em = $this->getDoctrine()->getManager();
+					$em->flush();
+			
+					return $this->redirectToRoute("blog_voir",array("id" => $id));
+				}
+			}
+			
+			return $this->render(
+					"BlogBundle:Form:addForm.html.twig",
+					array(
+							"form" => $formulaire->createView()
+					)
+					);
+	}
+
+	public function manageArticleAction($id, Request $request){
+		if($id != 0){
+			$blog = $this->getDoctrine()
+				->getManager()
+				->getRepository("BlogBundle:Blog")
+				->find($id);
+		} else {
+			$blog = new Blog;
+		}
+		
+		$formulaire = $this->createForm(BlogType::class, $blog);
+			
+		if($request->getMethod() == "POST"){
+			$formulaire->handleRequest($request);
+				
+			if($formulaire->isValid()){
+				$em = $this->getDoctrine()->getManager();
+				if($id == 0){
+					$em->persist($blog);
+				}
+				$em->flush();
+				
+				if($id == 0){
+					$id = $blog->getId();
+				}
+				
+				return $this->redirectToRoute("blog_voir",array("id" => $id));
+			}
+		}
+			
+		return $this->render(
+				"BlogBundle:Form:addForm.html.twig",
+				array(
+						"form" => $formulaire->createView()
+				)
+				);
 	}
 	
 	/**

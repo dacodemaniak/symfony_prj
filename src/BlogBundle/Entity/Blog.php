@@ -70,7 +70,7 @@ class Blog
     
     
     /**
-     * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Commentaire", mappedBy="blog")
+     * @ORM\OneToMany(targetEntity="BlogBundle\Entity\Commentaire", cascade={"persist"}, mappedBy="blog")
      * @var ArrayCollection
      * 	targetEntity => Entité cible de la relation bi-directionnelle
      * 	mappedBy => Définit le nom de l'attribut dans l'entité Propriétaire qui fait la relation avec l'entité courante.
@@ -82,7 +82,7 @@ class Blog
     	
     	$this->date = new \DateTime();
     	$this->auteur = "WebDev 2016-2017";
-    	$this->publication = false;
+    	$this->publication = false; // Tant que c'est faux, normalement le post n'est pas publié
     	$this->vues = 0; // Par défaut, on attribue 0 à la création d'un article
     }
 
@@ -102,14 +102,10 @@ class Blog
      * @param \DateTime $date
      * @return Blog
      */
-    public function setDate()
+    public function setDate($date)
     {	
-    	$currentDateTime = new \DateTime(); // Récupère la date et l'heure courante
-    	if($date < $currentDateTime){
-    		$this->date = $currentDateTime;
-    	} else {
-        	$this->date = $date;
-    	}
+        $this->date = $date;
+        
         return $this;
     }
 

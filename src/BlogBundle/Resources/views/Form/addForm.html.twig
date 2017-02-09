@@ -1,0 +1,20 @@
+{#
+	/BlogBundle/Resources/views/Form/addForm.html.twig
+	Affiche un formulaire permettant l'ajout d'un Article de blog
+	@var form => Les données du formulaire à afficher
+#}
+
+{% extends "BlogBundle::layout.html.twig" %}
+
+{% block title %}Ajouter un article{% endblock %}
+
+{% block blog_body %}
+	<div class="well">
+		{{ form_start(form) }}
+			{{ form_widget(form) }}
+			<button type="submit" name="btnAction" id="btnAction" class="btn btn-primary">
+				Ajouter
+			</button>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}
