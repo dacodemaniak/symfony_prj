@@ -5,6 +5,7 @@ namespace BlogBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Blog
@@ -27,6 +28,7 @@ class Blog
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\DateTime()
      */
     private $date;
 
@@ -34,6 +36,12 @@ class Blog
      * @var string
      *
      * @ORM\Column(name="titre", type="string", length=150)
+     * @Assert\Length(
+     * 	min = 10,
+     * 	max = 150,
+     * 	minMessage = "Le titre ne peut pas avoir moins de 10 caractères",
+     *  maxMessage = "Le titre ne doit pas dépasser 150 caractères"
+     * )
      */
     private $titre;
 
@@ -84,6 +92,9 @@ class Blog
     /**
      * Pas de mappage dans la base... Il s'agit du fichier lui-même
      * @var unknown
+     * @Assert\Image(
+     * 	mimeTypes = {"image/png", "image/jpeg", "image/gif"}
+     * )
      */
     private $file;
     

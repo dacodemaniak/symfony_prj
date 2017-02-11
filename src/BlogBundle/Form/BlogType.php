@@ -46,7 +46,13 @@ class BlogType extends AbstractType
         			array("entry_type" => CommentaireType::class,
         					"allow_add" => true
         	))
-        	->add("file", FileType::class);
+        	->add("file", FileType::class, array(
+        		"label" => "Image",
+        		"attr" => array(
+        			"accept" => "image/jpeg, image/png, image/gif"
+        		)
+        		
+        	));
     }
     
     /**

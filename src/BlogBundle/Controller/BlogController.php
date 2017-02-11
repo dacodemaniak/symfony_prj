@@ -418,6 +418,12 @@ class BlogController extends Controller{
 			if($formulaire->isValid()){
 				$em = $this->getDoctrine()->getManager();
 				if($id == 0){
+					// Chargement du service SpamKiller
+					$spamKiller = $this->container->get("blog.spamkiller");
+					
+					if($spamKiller->isSpam($blog->getContenu())){
+						throw new \Exception("L'article semble suspect, vérifiez le contenu");
+					}
 					// Attention, on doit faire l'upload avant la persistence
 					$blog->upload();
 					$em->persist($blog);
